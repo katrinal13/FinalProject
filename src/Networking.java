@@ -4,6 +4,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.awt.Container;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,16 +19,15 @@ public class Networking
     public Networking()
     {
         apiKey = "EgOidq4EAUIwWDkRALSXvKJ7nXAy8cRp";
-        baseUrl = "https://app.ticketmaster.com/discovery/v2/";
+        baseUrl = "https://app.ticketmaster.com/discovery/v2";
     }
 
     public ArrayList<TicketMaster> getEvents(String zipCode)
     {
-        String endPoint = "/discovery/v2/events.json";
-        String urlNowPlaying = baseUrl + endPoint + "?postalCode=" + zipCode + "&api_key="+ apiKey;
+        String endPoint = "/events.json";
+        String urlNowPlaying = baseUrl + endPoint + "?postalCode=" + zipCode + "&apikey="+ apiKey;
 
         String response = makeAPICall(urlNowPlaying);
-
         ArrayList<TicketMaster> events = parseNowPlayingJSON(response);
         return events;
     }

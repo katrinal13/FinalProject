@@ -73,8 +73,8 @@ public class GUI implements ActionListener
         eventPanel.add(resetButton);
 
         frame.add(logoWelcomePanel, BorderLayout.NORTH);
-        frame.add(eventListPanel, BorderLayout.CENTER);
-        frame.add(eventPanel, BorderLayout.SOUTH);
+        frame.add(eventListPanel, BorderLayout.SOUTH);
+        frame.add(eventPanel, BorderLayout.CENTER);
 
         enterButton.addActionListener(this);
         resetButton.addActionListener(this);
@@ -120,7 +120,7 @@ public class GUI implements ActionListener
 
         for(Component c : componentList)
         {
-            if(c instanceof JLabel || c instanceof JButton)
+            if(c instanceof JLabel || c instanceof JButton || c instanceof JTextField)
             {
                 eventPanel.remove(c);
             }
@@ -130,8 +130,8 @@ public class GUI implements ActionListener
 
         JLabel eventLabel = new JLabel("Which Event? (Enter 1-" + eventList.size() + "): ");
         eventEntry = new JTextField(10);
-        JButton submitButton = new JButton("Enter");
-        JButton clearButton = new JButton("Reset");
+        JButton submitButton = new JButton("Submit");
+        JButton clearButton = new JButton("Clear");
         eventPanel.add(eventLabel);
         eventPanel.add(eventEntry);
         eventPanel.add(submitButton);
