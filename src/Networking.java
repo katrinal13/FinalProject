@@ -28,6 +28,7 @@ public class Networking
         String urlNowPlaying = baseUrl + endPoint + "?postalCode=" + zipCode + "&apikey="+ apiKey;
 
         String response = makeAPICall(urlNowPlaying);
+        System.out.println(response);
         ArrayList<TicketMaster> events = parseNowPlayingJSON(response);
         return events;
     }
@@ -51,13 +52,14 @@ public class Networking
         ArrayList<TicketMaster> events = new ArrayList<TicketMaster>();
 
         JSONObject jsonObj = new JSONObject(json);
-        JSONArray eventList = jsonObj.getJSONArray("events");
+        JSONObject embedded = jsonObj.getJSONObject("_embedded");
+        JSONArray eventList = embedded.getJSONArray("events");
 
         for (int i = 0; i < eventList.length(); i++)
         {
             JSONObject eventObj = eventList.getJSONObject(i);
             String eventName = eventObj.getString("name");
-            int eventID = eventObj.getInt("id");
+            String eventID = eventObj.getString("id");
             TicketMaster event = new TicketMaster(eventName, eventID);
             events.add(event);
         }

@@ -1,8 +1,8 @@
 public class TicketMaster {
     private String eventName;
-    private int eventID;
+    private String eventID;
 
-    public TicketMaster(String eventName, int eventID) {
+    public TicketMaster(String eventName, String eventID) {
         this.eventName = eventName;
         this.eventID = eventID;
     }
@@ -11,7 +11,7 @@ public class TicketMaster {
         return eventName;
     }
 
-    public int getEventID()
+    public String getEventID()
     {
         return eventID;
     }

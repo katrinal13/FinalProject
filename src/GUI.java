@@ -106,7 +106,7 @@ public class GUI implements ActionListener
             int eventIdx = eventNumInt - 1;
             TicketMaster selectedEvent = eventList.get(eventIdx);
 
-            //loadEventInfo(selectedEvent);
+            loadEventInfo(selectedEvent);
         }
         else if (text.equals("Clear"))
         {
@@ -146,11 +146,16 @@ public class GUI implements ActionListener
         String zip = zipCodeEntry.getText();
         eventList = client.getEvents(zip);
         String info = "";
-        for (int i = 1; i < eventList.size() + 1; i++)
+        for (int i = 0; i < eventList.size(); i++)
         {
-            info += "";
+            info += i + 1 + ". " + eventList.get(i).getEventName() + ", " + eventList.get(i).getEventID() + "\n";
         }
         eventPanel.add(eventInfo);
         eventInfo.setText(info);
+    }
+
+    public void loadEventInfo(TicketMaster event)
+    {
+
     }
 }
