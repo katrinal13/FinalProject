@@ -1,8 +1,12 @@
+import java.util.ArrayList;
+
 public class EventDetails extends TicketMaster
 {
     private String description;
     private String additionalInfo;
     private String url;
+
+    private String info;
 
     private String startLocalDate;
     private String startTime;
@@ -13,14 +17,12 @@ public class EventDetails extends TicketMaster
     private String saleStart;
     private String saleEnd;
 
-    private String presaleName;
-    private String presaleStart;
-    private String presaleEnd;
-    private String presaleURL;
-    private String presaleDescription;
+    private ArrayList<String[]> presales;
 
     private String seatmap;
     private String ticketLimit;
+
+    private String placeName;
 
     private String address1;
     private String address2;
@@ -31,25 +33,23 @@ public class EventDetails extends TicketMaster
 
     private String pleaseNote;
 
-    public EventDetails (String eventName, String eventID, String description, String additionalInfo, String url, String startLocalDate, String startTime, String endLocalDate, String endTime, String saleStart, String saleEnd, String presaleName, String presaleStart, String presaleEnd, String presaleURL, String presaleDescription, String seatmap, String ticketLimit, String address1, String address2, String address3, String city, String state, String pleaseNote)
+    public EventDetails (String eventName, String eventID, String description, String additionalInfo, String url, String info, String startLocalDate, String startTime, String endLocalDate, String endTime, String saleStart, String saleEnd, ArrayList<String[]> presales, String seatmap, String ticketLimit, String placeName, String address1, String address2, String address3, String city, String state, String pleaseNote)
     {
         super(eventName, eventID);
         this.description = description;
         this.additionalInfo = additionalInfo;
         this.url = url;
+        this.info = info;
         this.startLocalDate = startLocalDate;
         this.startTime = startTime;
         this.endLocalDate = endLocalDate;
         this.endTime = endTime;
         this.saleStart = saleStart;
         this.saleEnd = saleEnd;
-        this.presaleName = presaleName;
-        this.presaleStart = presaleStart;
-        this.presaleEnd = presaleEnd;
-        this.presaleURL = presaleURL;
-        this.presaleDescription = presaleDescription;
+        this.presales = presales;
         this.seatmap = seatmap;
         this.ticketLimit = ticketLimit;
+        this.placeName = placeName;
         this.address1 = address1;
         this.address2 = address2;
         this.address3 = address3;
@@ -73,6 +73,11 @@ public class EventDetails extends TicketMaster
         return url;
     }
 
+    public String getInfo()
+    {
+        return info;
+    }
+
     public String getStartLocalDate()
     {
         return startLocalDate;
@@ -91,5 +96,65 @@ public class EventDetails extends TicketMaster
     public String getEndTime()
     {
         return endTime;
+    }
+
+    public String getSaleStart()
+    {
+        return saleStart;
+    }
+
+    public String getSaleEnd()
+    {
+        return saleEnd;
+    }
+
+    public ArrayList<String[]> getPresales()
+    {
+        return presales;
+    }
+
+    public String getSeatmap()
+    {
+        return seatmap;
+    }
+
+    public String getTicketLimit()
+    {
+        return ticketLimit;
+    }
+
+    public String getPlaceName()
+    {
+        return placeName;
+    }
+
+    public String getAddress1()
+    {
+        return address1;
+    }
+
+    public String getAddress2()
+    {
+        return address2;
+    }
+
+    public String getAddress3()
+    {
+        return address3;
+    }
+
+    public String getCity()
+    {
+        return city;
+    }
+
+    public String getState()
+    {
+        return state;
+    }
+
+    public String getPleaseNote()
+    {
+        return pleaseNote;
     }
 }

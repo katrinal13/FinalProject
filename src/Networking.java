@@ -25,7 +25,7 @@ public class Networking
     public ArrayList<TicketMaster> getEvents(String zipCode)
     {
         String endPoint = "/events.json";
-        String urlNowPlaying = baseUrl + endPoint + "?postalCode=" + zipCode + "&apikey="+ apiKey;
+        String urlNowPlaying = baseUrl + endPoint + "?postalCode=" + zipCode + "&apikey=" + apiKey;
 
         String response = makeAPICall(urlNowPlaying);
         System.out.println(response);
@@ -36,7 +36,7 @@ public class Networking
     private String makeAPICall(String url)
     {
         try {
-            URI myUri = URI.create(url); // creates a URI object from the url string
+            URI myUri = URI.create(url);
             HttpRequest request = HttpRequest.newBuilder().uri(myUri).build();
             HttpClient client = HttpClient.newHttpClient();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -64,5 +64,81 @@ public class Networking
             events.add(event);
         }
         return events;
+    }
+
+    private EventDetails getEventDetails(String eventID)
+    {
+        String endPoint = "/events/" + eventID;
+        String urlEventDetails = baseUrl + endPoint + "?api_key=" + apiKey;
+
+        String response = makeAPICall(urlEventDetails);
+
+        EventDetails detailed = parseEventDetailJSON(response);
+        return detailed;
+    }
+
+    private EventDetails parseEventDetailJSON(String json)
+    {
+        ArrayList<String[]> presales = new ArrayList<String[]>();
+
+        JSONObject jsonObj = new JSONObject(json);
+
+        String eventName = jsonObj.getString("name");
+        String eventID = jsonObj.getString("id");
+
+        String description = jsonObj.getString("description");
+        String additionalInfo = jsonObj.getString("additionalInfo");
+        String url = jsonObj.getString("url");
+        String info = jsonObj.getString("info");
+        String pleaseNote = jsonObj.getString("pleaseNote");
+
+        JSONObject dates = jsonObj.getJSONObject("dates");
+        JSONObject start = dates.getJSONObject("start");
+        String startLocalDate = start.getString("localDate");
+        JSONObject localTimeS = start.getJSONObject("localTime");
+        String startTime = localTimeS.getString("dateTime");
+
+        JSONObject end = dates.getJSONObject("end");
+        String endLocalDate = end.getString("localDate");
+        JSONObject localTimeE = end.getJSONObject("dateTime");
+        String endTime = localTimeE.getString("dateTime");
+
+        JSONObject sales = jsonObj.getJSONObject("sales");
+        JSONObject publicObj = sales.getJSONObject("public");
+        String saleStart = publicObj.getString("startDateTime");
+        String saleEnd = publicObj.getString("endDateTime");
+
+        JSONArray pre = sales.getJSONArray("presales");
+        for (int i = 0; i < pre.length(); i++)
+        {
+            JSONObject obj = pre.getJSONObject(i);
+            String presaleName = obj.getString("name");
+            String presaleDescription = obj.getString("description");
+            String presaleURL = obj.getString("url");
+            String presaleStart = obj.getString("startDateTime");
+            String presaleEnd = obj.getString("endDateTime");
+            String[] presale = {presaleName, presaleDescription, presaleURL, presaleStart, presaleEnd};
+            presales.add(presale);
+        }
+
+        JSONObject seatObj = jsonObj.getJSONObject("seatmap");
+        String seatmap = seatObj.getString("staticUrl");
+
+        JSONObject limit = jsonObj.getJSONObject("ticketLimit");
+        String ticketLimit = limit.getString("info");
+
+        JSONObject place = jsonObj.getJSONObject("place");
+        String placeName = place.getString("name");
+        JSONObject address = place.getJSONObject("address");
+        String address1 = address.getString("line1");
+        String address2 = address.getString("line2");
+        String address3 = address.getString("line3");
+        JSONObject cityObj = jsonObj.getJSONObject("city");
+        String city = cityObj.getString("name");
+        JSONObject stateObj = jsonObj.getJSONObject("state");
+        String state = stateObj.getString("name");
+
+        EventDetails eventInfo = new EventDetails(eventName, eventID, description, additionalInfo, url, info, startLocalDate, startTime, endLocalDate, endTime, saleStart, saleEnd, presales, seatmap, ticketLimit, placeName, address1, address2, address3, city, state, pleaseNote);
+        return eventInfo;
     }
 }
