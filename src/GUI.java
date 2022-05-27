@@ -156,6 +156,18 @@ public class GUI implements ActionListener
 
     public void loadEventInfo(TicketMaster event)
     {
-
+        EventDetails eventDetails = client.getEventDetails(event.getEventID());
+        String info = "Info: " + eventDetails.getInfo() +
+                      "\nStart Date/Time: " + eventDetails.getStartLocalDate() + " @ " + eventDetails.getStartTime() +
+                      "\nEnd Date/Time: " + eventDetails.getEndLocalDate() + " @ " + eventDetails.getEndTime() +
+                      "\nPlace: " + eventDetails.getPlaceName() +
+                      "\nLocation: " + eventDetails.getAddress1() + "\n          " + eventDetails.getAddress2() + "\n          " + eventDetails.getAddress3() + "\n          " + eventDetails.getCity() + ", " + eventDetails.getState() + " " + eventDetails.getPostalCode() +
+                      "\nTicket Limit: " + eventDetails.getTicketLimit() +
+                      "\nSale Start: " + eventDetails.getSaleStart() +
+                      "\nSale End: " + eventDetails.getSaleEnd() +
+                      "\nURL: " + eventDetails.getURL() +
+                      "\nPlease Note: " + eventDetails.getPleaseNote();
+        eventInfo.setText(info);
     }
 }
+

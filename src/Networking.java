@@ -66,10 +66,10 @@ public class Networking
         return events;
     }
 
-    private EventDetails getEventDetails(String eventID)
+    public EventDetails getEventDetails(String eventID)
     {
         String endPoint = "/events/" + eventID;
-        String urlEventDetails = baseUrl + endPoint + "?api_key=" + apiKey;
+        String urlEventDetails = baseUrl + endPoint + ".json?apikey=" + apiKey;
 
         String response = makeAPICall(urlEventDetails);
 
@@ -86,8 +86,6 @@ public class Networking
         String eventName = jsonObj.getString("name");
         String eventID = jsonObj.getString("id");
 
-        String description = jsonObj.getString("description");
-        String additionalInfo = jsonObj.getString("additionalInfo");
         String url = jsonObj.getString("url");
         String info = jsonObj.getString("info");
         String pleaseNote = jsonObj.getString("pleaseNote");
@@ -137,8 +135,10 @@ public class Networking
         String city = cityObj.getString("name");
         JSONObject stateObj = jsonObj.getJSONObject("state");
         String state = stateObj.getString("name");
+        JSONObject country = place.getJSONObject("country");
+        String postalCode = country.getString("postalCode");
 
-        EventDetails eventInfo = new EventDetails(eventName, eventID, description, additionalInfo, url, info, startLocalDate, startTime, endLocalDate, endTime, saleStart, saleEnd, presales, seatmap, ticketLimit, placeName, address1, address2, address3, city, state, pleaseNote);
+        EventDetails eventInfo = new EventDetails(eventName, eventID, url, info, startLocalDate, startTime, endLocalDate, endTime, saleStart, saleEnd, presales, seatmap, ticketLimit, placeName, address1, address2, address3, city, state, postalCode, pleaseNote);
         return eventInfo;
     }
 }

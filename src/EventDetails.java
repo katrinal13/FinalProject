@@ -2,8 +2,6 @@ import java.util.ArrayList;
 
 public class EventDetails extends TicketMaster
 {
-    private String description;
-    private String additionalInfo;
     private String url;
 
     private String info;
@@ -31,13 +29,13 @@ public class EventDetails extends TicketMaster
     private String city;
     private String state;
 
+    private String postalCode;
+
     private String pleaseNote;
 
-    public EventDetails (String eventName, String eventID, String description, String additionalInfo, String url, String info, String startLocalDate, String startTime, String endLocalDate, String endTime, String saleStart, String saleEnd, ArrayList<String[]> presales, String seatmap, String ticketLimit, String placeName, String address1, String address2, String address3, String city, String state, String pleaseNote)
+    public EventDetails (String eventName, String eventID, String url, String info, String startLocalDate, String startTime, String endLocalDate, String endTime, String saleStart, String saleEnd, ArrayList<String[]> presales, String seatmap, String ticketLimit, String placeName, String address1, String address2, String address3, String city, String state, String postalCode, String pleaseNote)
     {
         super(eventName, eventID);
-        this.description = description;
-        this.additionalInfo = additionalInfo;
         this.url = url;
         this.info = info;
         this.startLocalDate = startLocalDate;
@@ -55,17 +53,8 @@ public class EventDetails extends TicketMaster
         this.address3 = address3;
         this.city = city;
         this.state = state;
+        this.postalCode = postalCode;
         this.pleaseNote = pleaseNote;
-    }
-
-    public String getDescription()
-    {
-        return description;
-    }
-
-    public String getAdditionalInfo()
-    {
-        return additionalInfo;
     }
 
     public String getURL()
@@ -151,6 +140,10 @@ public class EventDetails extends TicketMaster
     public String getState()
     {
         return state;
+    }
+
+    public String getPostalCode(){
+        return postalCode;
     }
 
     public String getPleaseNote()
