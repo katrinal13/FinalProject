@@ -99,17 +99,33 @@ public class Networking
         }
 
         JSONObject dates = jsonObj.getJSONObject("dates");
-        JSONObject start = dates.getJSONObject("start");
-        String startLocalDate = start.getString("localDate");
-        String startTime = start.getString("dateTime");
-
+        String startLocalDate = "";
+        String startTime = "";
+        if (dates.has("start"))
+        {
+            JSONObject start = dates.getJSONObject("start");
+            if (start.has("localDate"))
+            {
+                startLocalDate = start.getString("localDate");
+            }
+            if (start.has("dateTime"))
+            {
+                startTime = start.getString("dateTime");
+            }
+        }
         String endLocalDate = "";
         String endTime = "";
         if (dates.has("end"))
         {
             JSONObject end = dates.getJSONObject("end");
-            endLocalDate = end.getString("localDate");
-            endTime = end.getString("dateTime");
+            if (end.has("endLocalDate"))
+            {
+                endLocalDate = end.getString("localDate");
+            }
+            if (end.has("localTime"))
+            {
+                endTime = end.getString("dateTime");
+            }
         }
         JSONObject sales = jsonObj.getJSONObject("sales");
         JSONObject publicObj = sales.getJSONObject("public");
@@ -143,8 +159,12 @@ public class Networking
             }
         }
 
-        JSONObject seatObj = jsonObj.getJSONObject("seatmap");
-        String seatmap = seatObj.getString("staticUrl");
+        String seatmap = "";
+        if (jsonObj.has("seatmap"))
+        {
+            JSONObject seatObj = jsonObj.getJSONObject("seatmap");
+            seatmap = seatObj.getString("staticUrl");
+        }
 
         String ticketLimit = "";
         if (jsonObj.has("ticketLimit"))

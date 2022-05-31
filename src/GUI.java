@@ -1,3 +1,4 @@
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -15,6 +16,9 @@ import java.awt.event.ItemEvent;
 import javax.swing.JCheckBox;
 import java.awt.event.ItemListener;
 import java.awt.Component;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class GUI implements ActionListener, ItemListener
@@ -30,6 +34,8 @@ public class GUI implements ActionListener, ItemListener
 
     private TicketMaster selectedEvent;
 
+    private String seatmapStr;
+
     public GUI()
     {
         eventInfo = new JTextArea(35, 70);
@@ -40,6 +46,7 @@ public class GUI implements ActionListener, ItemListener
         eventPanel = new JPanel();
         eventDetails = null;
         selectedEvent = null;
+        seatmapStr = "";
 
         setUpGUI();
     }
@@ -92,7 +99,6 @@ public class GUI implements ActionListener, ItemListener
     public void actionPerformed(ActionEvent e)
     {
         JButton button = (JButton) (e.getSource());
-
         String text = button.getText();
 
         if (text.equals("Enter"))
@@ -113,18 +119,48 @@ public class GUI implements ActionListener, ItemListener
 
             loadEventInfo(selectedEvent);
 
+            JButton seatmap = new JButton("Seatmap");
+
             JCheckBox venues = new JCheckBox("Venues");
             JCheckBox presale = new JCheckBox("Presale");
 
+            seatmap.addActionListener(this);
             venues.addItemListener(this);
             presale.addItemListener(this);
 
+            eventPanel.add(seatmap);
             eventPanel.add(venues);
             eventPanel.add(presale);
         }
         else if (text.equals("Clear"))
         {
             eventEntry.setText("");
+        }
+        else if (text.equals("Seatmap"))
+        {
+            if (!eventDetails.getSeatmap().equals(""))
+            {
+                try {
+                    URL imageURL = new URL(eventDetails.getSeatmap());
+                    BufferedImage image = ImageIO.read(imageURL);
+                    JFrame frame = new JFrame("Seatmap " + eventDetails.getEventName());
+                    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    JLabel movieImage = new JLabel(new ImageIcon(image));
+                    frame.add(movieImage);
+                    frame.pack();
+                    frame.setVisible(true);
+                } catch (IOException exc) {
+                    System.out.println(exc.getMessage());
+                }
+            }
+            else
+            {
+                if (seatmapStr.equals(""))
+                {
+                    seatmapStr = "There is no seatmap for this event.";
+                    eventInfo.append(seatmapStr);
+                }
+            }
         }
     }
 
@@ -174,7 +210,18 @@ public class GUI implements ActionListener, ItemListener
         {
             if(c instanceof JLabel || c instanceof JButton || c instanceof JTextField)
             {
-                eventPanel.remove(c);
+                if (c instanceof JButton)
+                {
+                    JButton button = (JButton) c;
+                    if (!button.getText().equals("Seatmap"))
+                    {
+                        eventPanel.remove(c);
+                    }
+                }
+                else
+                {
+                    eventPanel.remove(c);
+                }
             }
         }
         eventPanel.revalidate();
@@ -225,26 +272,29 @@ public class GUI implements ActionListener, ItemListener
 
         if (box.isSelected())
         {
-            if (text.equals("venues"))
+            if (text.equals("Venues"))
             {
                 ArrayList<String[]> venues = eventDetails.getVenues();
                 for (String[] arr : venues)
                 {
-                    JTextArea info = new JTextArea();
-                    info.setText(arr[0] + "\n" + arr[1] + "\n" + arr[2] + "\n" + arr[3] + "\n" + arr[4] + "\n\n");
-                    eventPanel.add(info);
+                    eventInfo.append(arr[0] + "\n" + arr[1] + "\n" + arr[2] + "\n" + arr[3] + "\n" + arr[4] + "\n\n");
                 }
             }
-            if (text.equals("presale"))
+            if (text.equals("Presale"))
             {
                 ArrayList<String[]> presale = eventDetails.getPresales();
                 if (presale != null)
                 {
                     for (String[] arr : presale)
                     {
-                        JTextArea info = new JTextArea();
-                        info.setText(arr[0] + "\n" + arr[1] + "\n" + arr[2] + "\n" + arr[3] + "\n" + arr[4] + "\n\n");
-                        eventPanel.add(info);
+                        for (String str : arr)
+                        {
+                            if (!str.equals(""))
+                            {
+                                eventInfo.append(str + "\n");
+                            }
+                        }
+                        eventInfo.append("\n");
                     }
                 }
             }
