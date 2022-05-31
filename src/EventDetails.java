@@ -20,20 +20,10 @@ public class EventDetails extends TicketMaster
     private String seatmap;
     private String ticketLimit;
 
-    private String placeName;
-
-    private String address1;
-    private String address2;
-    private String address3;
-
-    private String city;
-    private String state;
-
-    private String postalCode;
-
+    private ArrayList<String[]> venues;
     private String pleaseNote;
 
-    public EventDetails (String eventName, String eventID, String url, String info, String startLocalDate, String startTime, String endLocalDate, String endTime, String saleStart, String saleEnd, ArrayList<String[]> presales, String seatmap, String ticketLimit, String placeName, String address1, String address2, String address3, String city, String state, String postalCode, String pleaseNote)
+    public EventDetails (String eventName, String eventID, String url, String info, String startLocalDate, String startTime, String endLocalDate, String endTime, String saleStart, String saleEnd, ArrayList<String[]> presales, String seatmap, String ticketLimit, ArrayList<String[]> venues, String pleaseNote)
     {
         super(eventName, eventID);
         this.url = url;
@@ -47,13 +37,7 @@ public class EventDetails extends TicketMaster
         this.presales = presales;
         this.seatmap = seatmap;
         this.ticketLimit = ticketLimit;
-        this.placeName = placeName;
-        this.address1 = address1;
-        this.address2 = address2;
-        this.address3 = address3;
-        this.city = city;
-        this.state = state;
-        this.postalCode = postalCode;
+        this.venues = venues;
         this.pleaseNote = pleaseNote;
     }
 
@@ -112,38 +96,9 @@ public class EventDetails extends TicketMaster
         return ticketLimit;
     }
 
-    public String getPlaceName()
+    public ArrayList<String[]> getVenues()
     {
-        return placeName;
-    }
-
-    public String getAddress1()
-    {
-        return address1;
-    }
-
-    public String getAddress2()
-    {
-        return address2;
-    }
-
-    public String getAddress3()
-    {
-        return address3;
-    }
-
-    public String getCity()
-    {
-        return city;
-    }
-
-    public String getState()
-    {
-        return state;
-    }
-
-    public String getPostalCode(){
-        return postalCode;
+        return venues;
     }
 
     public String getPleaseNote()

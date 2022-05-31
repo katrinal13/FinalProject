@@ -17,7 +17,7 @@ import java.awt.event.ItemListener;
 import java.awt.Component;
 import java.util.ArrayList;
 
-public class GUI implements ActionListener
+public class GUI implements ActionListener, ItemListener
 {
     private JPanel eventPanel;
     private JTextField zipCodeEntry;
@@ -26,14 +26,20 @@ public class GUI implements ActionListener
     private JTextArea eventInfo;
     private ArrayList<TicketMaster> eventList;
 
+    private EventDetails eventDetails;
+
+    private TicketMaster selectedEvent;
+
     public GUI()
     {
-        eventInfo = new JTextArea(20, 35);
+        eventInfo = new JTextArea(35, 70);
         eventEntry = new JTextField();
         zipCodeEntry = new JTextField();
         eventList = new ArrayList<TicketMaster>();
         client = new Networking();
         eventPanel = new JPanel();
+        eventDetails = null;
+        selectedEvent = null;
 
         setUpGUI();
     }
@@ -92,7 +98,6 @@ public class GUI implements ActionListener
         if (text.equals("Enter"))
         {
             loadDisplay();
-            loadInformation();
         }
         else if (text.equals("Reset"))
         {
@@ -104,9 +109,18 @@ public class GUI implements ActionListener
             int eventNumInt = Integer.parseInt(selectedEventNum);
 
             int eventIdx = eventNumInt - 1;
-            TicketMaster selectedEvent = eventList.get(eventIdx);
+            selectedEvent = eventList.get(eventIdx);
 
             loadEventInfo(selectedEvent);
+
+            JCheckBox venues = new JCheckBox("Venues");
+            JCheckBox presale = new JCheckBox("Presale");
+
+            venues.addItemListener(this);
+            presale.addItemListener(this);
+
+            eventPanel.add(venues);
+            eventPanel.add(presale);
         }
         else if (text.equals("Clear"))
         {
@@ -128,6 +142,14 @@ public class GUI implements ActionListener
         eventPanel.revalidate();
         eventPanel.repaint();
 
+        String zip = zipCodeEntry.getText();
+        eventList = client.getEvents(zip);
+        String info = "";
+        for (int i = 0; i < eventList.size(); i++)
+        {
+            info += i + 1 + ". " + eventList.get(i).getEventName() + ", " + eventList.get(i).getEventID() + "\n";
+        }
+
         JLabel eventLabel = new JLabel("Which Event? (Enter 1-" + eventList.size() + "): ");
         eventEntry = new JTextField(10);
         JButton submitButton = new JButton("Submit");
@@ -137,37 +159,100 @@ public class GUI implements ActionListener
         eventPanel.add(submitButton);
         eventPanel.add(clearButton);
 
+        eventPanel.add(eventInfo);
+        eventInfo.setText(info);
+
         submitButton.addActionListener(this);
         clearButton.addActionListener(this);
     }
 
-    public void loadInformation()
+    public void loadEventInfo(TicketMaster event)
     {
-        String zip = zipCodeEntry.getText();
-        eventList = client.getEvents(zip);
-        String info = "";
-        for (int i = 0; i < eventList.size(); i++)
+        Component[] componentList = eventPanel.getComponents();
+
+        for(Component c : componentList)
         {
-            info += i + 1 + ". " + eventList.get(i).getEventName() + ", " + eventList.get(i).getEventID() + "\n";
+            if(c instanceof JLabel || c instanceof JButton || c instanceof JTextField)
+            {
+                eventPanel.remove(c);
+            }
         }
-        eventPanel.add(eventInfo);
+        eventPanel.revalidate();
+        eventPanel.repaint();
+
+        eventDetails = client.getEventDetails(event.getEventID());
+
+        String info = "";
+        if (!eventDetails.getInfo().equals(""))
+        {
+            info += "Info: " + eventDetails.getInfo() + "\n\n";
+        }
+        if (!eventDetails.getStartLocalDate().equals(""))
+        {
+            info += "Start Date/Time: " + eventDetails.getStartLocalDate() + " @ " + eventDetails.getStartTime() + "\n\n";
+        }
+        if (!eventDetails.getEndLocalDate().equals(""))
+        {
+            info += "End Date/Time: " + eventDetails.getEndLocalDate() + " @ " + eventDetails.getEndTime() + "\n\n";
+        }
+        if (!eventDetails.getTicketLimit().equals(""))
+        {
+            info += "Ticket Limit: " + eventDetails.getTicketLimit() + "\n\n";
+        }
+        if (!eventDetails.getSaleStart().equals(""))
+        {
+            info += "Sale Start: " + eventDetails.getSaleStart() + "\n\n";
+        }
+        if (!eventDetails.getSaleEnd().equals(""))
+        {
+            info += "Sale End: " + eventDetails.getSaleEnd() + "\n\n";
+        }
+        if (!eventDetails.getURL().equals(""))
+        {
+            info += "URL: " + eventDetails.getURL() + "\n\n";
+        }
+        if (!eventDetails.getPleaseNote().equals(""))
+        {
+            info += "Please Note: " + eventDetails.getPleaseNote() + "\n\n";
+        }
         eventInfo.setText(info);
     }
 
-    public void loadEventInfo(TicketMaster event)
+    public void itemStateChanged(ItemEvent e)
     {
-        EventDetails eventDetails = client.getEventDetails(event.getEventID());
-        String info = "Info: " + eventDetails.getInfo() +
-                      "\nStart Date/Time: " + eventDetails.getStartLocalDate() + " @ " + eventDetails.getStartTime() +
-                      "\nEnd Date/Time: " + eventDetails.getEndLocalDate() + " @ " + eventDetails.getEndTime() +
-                      "\nPlace: " + eventDetails.getPlaceName() +
-                      "\nLocation: " + eventDetails.getAddress1() + "\n          " + eventDetails.getAddress2() + "\n          " + eventDetails.getAddress3() + "\n          " + eventDetails.getCity() + ", " + eventDetails.getState() + " " + eventDetails.getPostalCode() +
-                      "\nTicket Limit: " + eventDetails.getTicketLimit() +
-                      "\nSale Start: " + eventDetails.getSaleStart() +
-                      "\nSale End: " + eventDetails.getSaleEnd() +
-                      "\nURL: " + eventDetails.getURL() +
-                      "\nPlease Note: " + eventDetails.getPleaseNote();
-        eventInfo.setText(info);
+        JCheckBox box = (JCheckBox) (e.getSource());
+        String text = box.getText();
+
+        if (box.isSelected())
+        {
+            if (text.equals("venues"))
+            {
+                ArrayList<String[]> venues = eventDetails.getVenues();
+                for (String[] arr : venues)
+                {
+                    JTextArea info = new JTextArea();
+                    info.setText(arr[0] + "\n" + arr[1] + "\n" + arr[2] + "\n" + arr[3] + "\n" + arr[4] + "\n\n");
+                    eventPanel.add(info);
+                }
+            }
+            if (text.equals("presale"))
+            {
+                ArrayList<String[]> presale = eventDetails.getPresales();
+                if (presale != null)
+                {
+                    for (String[] arr : presale)
+                    {
+                        JTextArea info = new JTextArea();
+                        info.setText(arr[0] + "\n" + arr[1] + "\n" + arr[2] + "\n" + arr[3] + "\n" + arr[4] + "\n\n");
+                        eventPanel.add(info);
+                    }
+                }
+            }
+        }
+        else if (!box.isSelected())
+        {
+            loadEventInfo(selectedEvent);
+        }
     }
 }
 
