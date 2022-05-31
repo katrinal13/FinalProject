@@ -36,6 +36,10 @@ public class GUI implements ActionListener, ItemListener
 
     private String seatmapStr;
 
+    private JCheckBox venues;
+
+    private JCheckBox presale;
+
     public GUI()
     {
         eventInfo = new JTextArea(35, 70);
@@ -47,6 +51,8 @@ public class GUI implements ActionListener, ItemListener
         eventDetails = null;
         selectedEvent = null;
         seatmapStr = "";
+        venues = new JCheckBox();
+        presale = new JCheckBox();
 
         setUpGUI();
     }
@@ -121,8 +127,8 @@ public class GUI implements ActionListener, ItemListener
 
             JButton seatmap = new JButton("Seatmap");
 
-            JCheckBox venues = new JCheckBox("Venues");
-            JCheckBox presale = new JCheckBox("Presale");
+            venues = new JCheckBox("Venues");
+            presale = new JCheckBox("Presale");
 
             seatmap.addActionListener(this);
             venues.addItemListener(this);
@@ -274,34 +280,63 @@ public class GUI implements ActionListener, ItemListener
         {
             if (text.equals("Venues"))
             {
-                ArrayList<String[]> venues = eventDetails.getVenues();
-                for (String[] arr : venues)
-                {
-                    eventInfo.append(arr[0] + "\n" + arr[1] + "\n" + arr[2] + "\n" + arr[3] + "\n" + arr[4] + "\n\n");
-                }
+                appendVenues();
             }
             if (text.equals("Presale"))
             {
-                ArrayList<String[]> presale = eventDetails.getPresales();
-                if (presale != null)
-                {
-                    for (String[] arr : presale)
-                    {
-                        for (String str : arr)
-                        {
-                            if (!str.equals(""))
-                            {
-                                eventInfo.append(str + "\n");
-                            }
-                        }
-                        eventInfo.append("\n");
-                    }
-                }
+                appendPresale();
             }
         }
         else if (!box.isSelected())
         {
             loadEventInfo(selectedEvent);
+            if (!seatmapStr.equals(""))
+            {
+                eventInfo.append(seatmapStr);
+            }
+            if (venues.isSelected())
+            {
+                appendVenues();
+            }
+            else if (presale.isSelected())
+            {
+                appendPresale();
+            }
+        }
+    }
+
+    private void appendVenues()
+    {
+        ArrayList<String[]> venues = eventDetails.getVenues();
+        for (String[] arr : venues)
+        {
+            eventInfo.append(arr[0] + "\n" + arr[1] + "\n" + arr[2] + "\n" + arr[3] + "\n" + arr[4] + "\n\n");
+        }
+    }
+
+    private void appendPresale()
+    {
+        if (eventDetails.getPresales().size() == 0)
+        {
+            eventInfo.append("There are no presales for this event.");
+        }
+        else
+        {
+            ArrayList<String[]> presale = eventDetails.getPresales();
+            if (presale != null)
+            {
+                for (String[] arr : presale)
+                {
+                    for (String str : arr)
+                    {
+                        if (!str.equals(""))
+                        {
+                            eventInfo.append(str + "\n");
+                        }
+                    }
+                    eventInfo.append("\n");
+                }
+            }
         }
     }
 }
