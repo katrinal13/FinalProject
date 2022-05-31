@@ -4,7 +4,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.awt.Container;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -80,6 +79,7 @@ public class Networking
     private EventDetails parseEventDetailJSON(String json)
     {
         ArrayList<String[]> presales = new ArrayList<String[]>();
+        ArrayList<String[]> venues = new ArrayList<String[]>();
 
         JSONObject jsonObj = new JSONObject(json);
 
@@ -87,58 +87,98 @@ public class Networking
         String eventID = jsonObj.getString("id");
 
         String url = jsonObj.getString("url");
-        String info = jsonObj.getString("info");
-        String pleaseNote = jsonObj.getString("pleaseNote");
+        String info = "";
+        if (jsonObj.has("info"))
+        {
+            info = jsonObj.getString("info");
+        }
+        String pleaseNote = "";
+        if (jsonObj.has("pleaseNote"))
+        {
+            pleaseNote = jsonObj.getString("pleaseNote");
+        }
 
         JSONObject dates = jsonObj.getJSONObject("dates");
         JSONObject start = dates.getJSONObject("start");
         String startLocalDate = start.getString("localDate");
-        JSONObject localTimeS = start.getJSONObject("localTime");
-        String startTime = localTimeS.getString("dateTime");
+        String startTime = start.getString("dateTime");
 
-        JSONObject end = dates.getJSONObject("end");
-        String endLocalDate = end.getString("localDate");
-        JSONObject localTimeE = end.getJSONObject("dateTime");
-        String endTime = localTimeE.getString("dateTime");
-
+        String endLocalDate = "";
+        String endTime = "";
+        if (dates.has("end"))
+        {
+            JSONObject end = dates.getJSONObject("end");
+            endLocalDate = end.getString("localDate");
+            endTime = end.getString("dateTime");
+        }
         JSONObject sales = jsonObj.getJSONObject("sales");
         JSONObject publicObj = sales.getJSONObject("public");
         String saleStart = publicObj.getString("startDateTime");
         String saleEnd = publicObj.getString("endDateTime");
 
-        JSONArray pre = sales.getJSONArray("presales");
-        for (int i = 0; i < pre.length(); i++)
+        String presaleName = "";
+        String presaleDescription = "";
+        String presaleURL = "";
+        String presaleStart = "";
+        String presaleEnd = "";
+        if (sales.has("presales"))
         {
-            JSONObject obj = pre.getJSONObject(i);
-            String presaleName = obj.getString("name");
-            String presaleDescription = obj.getString("description");
-            String presaleURL = obj.getString("url");
-            String presaleStart = obj.getString("startDateTime");
-            String presaleEnd = obj.getString("endDateTime");
-            String[] presale = {presaleName, presaleDescription, presaleURL, presaleStart, presaleEnd};
-            presales.add(presale);
+            JSONArray pre = sales.getJSONArray("presales");
+            for (int i = 0; i < pre.length(); i++)
+            {
+                JSONObject obj = pre.getJSONObject(i);
+                presaleName = obj.getString("name");
+                if (obj.has("description"))
+                {
+                    presaleDescription = obj.getString("description");
+                }
+                if (obj.has("url"))
+                {
+                    presaleURL = obj.getString("url");
+                }
+                presaleStart = obj.getString("startDateTime");
+                presaleEnd = obj.getString("endDateTime");
+                String[] presale = {presaleName, presaleDescription, presaleURL, presaleStart, presaleEnd};
+                presales.add(presale);
+            }
         }
 
         JSONObject seatObj = jsonObj.getJSONObject("seatmap");
         String seatmap = seatObj.getString("staticUrl");
 
-        JSONObject limit = jsonObj.getJSONObject("ticketLimit");
-        String ticketLimit = limit.getString("info");
+        String ticketLimit = "";
+        if (jsonObj.has("ticketLimit"))
+        {
+            JSONObject limit = jsonObj.getJSONObject("ticketLimit");
+            ticketLimit = limit.getString("info");
+        }
 
-        JSONObject place = jsonObj.getJSONObject("place");
-        String placeName = place.getString("name");
-        JSONObject address = place.getJSONObject("address");
-        String address1 = address.getString("line1");
-        String address2 = address.getString("line2");
-        String address3 = address.getString("line3");
-        JSONObject cityObj = jsonObj.getJSONObject("city");
-        String city = cityObj.getString("name");
-        JSONObject stateObj = jsonObj.getJSONObject("state");
-        String state = stateObj.getString("name");
-        JSONObject country = place.getJSONObject("country");
-        String postalCode = country.getString("postalCode");
+        JSONObject embedded = jsonObj.getJSONObject("_embedded");
+        JSONArray venuesObj = embedded.getJSONArray("venues");
+        for (int i = 0; i < venuesObj.length(); i++)
+        {
+            JSONObject venue = venuesObj.getJSONObject(i);
+            String[] venueInfo = new String[5];
+            venueInfo[0] = venue.getString("name");
+            JSONObject address = venue.getJSONObject("address");
+            venueInfo[1] = address.getString("line1");
+            if (address.has("line2"))
+            {
+                venueInfo[1] += "\n" + address.getString("line2");
+            }
+            if (address.has("line3"))
+            {
+                venueInfo[1] += "\n" + address.getString("line1");
+            }
+            JSONObject city = venue.getJSONObject("city");
+            venueInfo[2] = city.getString("name");
+            JSONObject state = venue.getJSONObject("state");
+            venueInfo[3] = state.getString("name");
+            venueInfo[4] = venue.getString("postalCode");
+            venues.add(venueInfo);
+        }
 
-        EventDetails eventInfo = new EventDetails(eventName, eventID, url, info, startLocalDate, startTime, endLocalDate, endTime, saleStart, saleEnd, presales, seatmap, ticketLimit, placeName, address1, address2, address3, city, state, postalCode, pleaseNote);
+        EventDetails eventInfo = new EventDetails(eventName, eventID, url, info, startLocalDate, startTime, endLocalDate, endTime, saleStart, saleEnd, presales, seatmap, ticketLimit, venues, pleaseNote);
         return eventInfo;
     }
 }
