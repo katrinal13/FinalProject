@@ -1,11 +1,5 @@
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JTextArea;
-import javax.swing.JButton;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.Color;
@@ -13,7 +7,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import javax.swing.JCheckBox;
 import java.awt.event.ItemListener;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
@@ -117,14 +110,6 @@ public class GUI implements ActionListener, ItemListener
         }
         else if (text.equals("Submit"))
         {
-            String selectedEventNum = eventEntry.getText();
-            int eventNumInt = Integer.parseInt(selectedEventNum);
-
-            int eventIdx = eventNumInt - 1;
-            selectedEvent = eventList.get(eventIdx);
-
-            loadEventInfo(selectedEvent);
-
             JButton seatmap = new JButton("Seatmap");
             JButton images = new JButton("View Image");
 
@@ -140,6 +125,14 @@ public class GUI implements ActionListener, ItemListener
             eventPanel.add(images);
             eventPanel.add(venues);
             eventPanel.add(presale);
+
+            String selectedEventNum = eventEntry.getText();
+            int eventNumInt = Integer.parseInt(selectedEventNum);
+
+            int eventIdx = eventNumInt - 1;
+            selectedEvent = eventList.get(eventIdx);
+
+            loadEventInfo(selectedEvent);
         }
         else if (text.equals("Clear"))
         {
