@@ -23,7 +23,9 @@ public class EventDetails extends TicketMaster
     private ArrayList<String[]> venues;
     private String pleaseNote;
 
-    public EventDetails (String eventName, String eventID, String url, String info, String startLocalDate, String startTime, String endLocalDate, String endTime, String saleStart, String saleEnd, ArrayList<String[]> presales, String seatmap, String ticketLimit, ArrayList<String[]> venues, String pleaseNote)
+    private String image;
+
+    public EventDetails (String eventName, String eventID, String url, String info, String startLocalDate, String startTime, String endLocalDate, String endTime, String saleStart, String saleEnd, ArrayList<String[]> presales, String seatmap, String ticketLimit, ArrayList<String[]> venues, String pleaseNote, String image)
     {
         super(eventName, eventID);
         this.url = url;
@@ -39,6 +41,7 @@ public class EventDetails extends TicketMaster
         this.ticketLimit = ticketLimit;
         this.venues = venues;
         this.pleaseNote = pleaseNote;
+        this.image = image;
     }
 
     public String getURL()
@@ -104,5 +107,10 @@ public class EventDetails extends TicketMaster
     public String getPleaseNote()
     {
         return pleaseNote;
+    }
+
+    public String getImage()
+    {
+        return image;
     }
 }

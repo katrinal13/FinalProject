@@ -77,7 +77,7 @@ public class GUI implements ActionListener, ItemListener
 
         JPanel eventListPanel = new JPanel();
         eventInfo.setText("events loading...");
-        eventInfo.setFont(new Font("Helvetica", Font.PLAIN, 16));
+        eventInfo.setFont(new Font("Helvetica", Font.PLAIN, 13));
         eventInfo.setWrapStyleWord(true);
         eventInfo.setLineWrap(true);
         eventListPanel.add(eventInfo);
@@ -126,15 +126,18 @@ public class GUI implements ActionListener, ItemListener
             loadEventInfo(selectedEvent);
 
             JButton seatmap = new JButton("Seatmap");
+            JButton images = new JButton("View Image");
 
             venues = new JCheckBox("Venues");
             presale = new JCheckBox("Presale");
 
+            images.addActionListener(this);
             seatmap.addActionListener(this);
             venues.addItemListener(this);
             presale.addItemListener(this);
 
             eventPanel.add(seatmap);
+            eventPanel.add(images);
             eventPanel.add(venues);
             eventPanel.add(presale);
         }
@@ -168,6 +171,21 @@ public class GUI implements ActionListener, ItemListener
                 }
             }
         }
+        else if (text.equals("View Image"))
+        {
+            try {
+                URL imageURL = new URL(eventDetails.getImage());
+                BufferedImage image = ImageIO.read(imageURL);
+                JFrame frame = new JFrame();
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                JLabel movieImage = new JLabel(new ImageIcon(image));
+                frame.add(movieImage);
+                frame.pack();
+                frame.setVisible(true);
+            } catch (IOException exc) {
+                System.out.println(exc.getMessage());
+            }
+        }
     }
 
     public void loadDisplay()
@@ -186,6 +204,7 @@ public class GUI implements ActionListener, ItemListener
 
         String zip = zipCodeEntry.getText();
         eventList = client.getEvents(zip);
+
         String info = "";
         for (int i = 0; i < eventList.size(); i++)
         {
@@ -219,7 +238,7 @@ public class GUI implements ActionListener, ItemListener
                 if (c instanceof JButton)
                 {
                     JButton button = (JButton) c;
-                    if (!button.getText().equals("Seatmap"))
+                    if (!button.getText().equals("Seatmap") && !button.getText().equals("View Image"))
                     {
                         eventPanel.remove(c);
                     }

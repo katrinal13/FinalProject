@@ -51,16 +51,20 @@ public class Networking
         ArrayList<TicketMaster> events = new ArrayList<TicketMaster>();
 
         JSONObject jsonObj = new JSONObject(json);
-        JSONObject embedded = jsonObj.getJSONObject("_embedded");
-        JSONArray eventList = embedded.getJSONArray("events");
 
-        for (int i = 0; i < eventList.length(); i++)
+        if (jsonObj.has("_embedded"))
         {
-            JSONObject eventObj = eventList.getJSONObject(i);
-            String eventName = eventObj.getString("name");
-            String eventID = eventObj.getString("id");
-            TicketMaster event = new TicketMaster(eventName, eventID);
-            events.add(event);
+            JSONObject embedded = jsonObj.getJSONObject("_embedded");
+            JSONArray eventList = embedded.getJSONArray("events");
+
+            for (int i = 0; i < eventList.length(); i++)
+            {
+                JSONObject eventObj = eventList.getJSONObject(i);
+                String eventName = eventObj.getString("name");
+                String eventID = eventObj.getString("id");
+                TicketMaster event = new TicketMaster(eventName, eventID);
+                events.add(event);
+            }
         }
         return events;
     }
@@ -198,7 +202,11 @@ public class Networking
             venues.add(venueInfo);
         }
 
-        EventDetails eventInfo = new EventDetails(eventName, eventID, url, info, startLocalDate, startTime, endLocalDate, endTime, saleStart, saleEnd, presales, seatmap, ticketLimit, venues, pleaseNote);
+        JSONArray imagesObj = jsonObj.getJSONArray("images");
+        JSONObject image = imagesObj.getJSONObject(3);
+        String imageURL = image.getString("url");
+
+        EventDetails eventInfo = new EventDetails(eventName, eventID, url, info, startLocalDate, startTime, endLocalDate, endTime, saleStart, saleEnd, presales, seatmap, ticketLimit, venues, pleaseNote, imageURL);
         return eventInfo;
     }
 }
