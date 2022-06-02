@@ -39,6 +39,8 @@ public class GUI implements ActionListener, ItemListener
 
     private String invalidZip;
 
+    private JPanel eventListPanel;
+
     public GUI()
     {
         eventInfo = new JTextArea(35, 70);
@@ -52,9 +54,9 @@ public class GUI implements ActionListener, ItemListener
         seatmapStr = "";
         venues = new JCheckBox();
         presale = new JCheckBox();
-        frame = new JFrame();
         noPresale = "";
         invalidZip = "";
+        eventListPanel = new JPanel();
 
         setUpGUI();
     }
@@ -77,7 +79,6 @@ public class GUI implements ActionListener, ItemListener
         logoWelcomePanel.add(pictureLabel);
         logoWelcomePanel.add(welcomeLabel);
 
-        JPanel eventListPanel = new JPanel();
         eventInfo.setText("events loading...");
         eventInfo.setFont(new Font("Helvetica", Font.PLAIN, 13));
         eventInfo.setWrapStyleWord(true);
@@ -138,6 +139,16 @@ public class GUI implements ActionListener, ItemListener
         }
         else if (text.equals("Submit"))
         {
+            Component[] componentList = eventPanel.getComponents();
+            for (Component c : componentList)
+            {
+                if (c instanceof JButton || c instanceof JCheckBox)
+                {
+                    eventPanel.remove(c);
+                }
+            }
+            eventPanel.revalidate();
+            eventPanel.repaint();
             JButton seatmap = new JButton("Seatmap");
             JButton images = new JButton("View Image");
             JButton back = new JButton("Back");
@@ -231,23 +242,16 @@ public class GUI implements ActionListener, ItemListener
         else if (text.equals("Return to Main"))
         {
             main();
+            invalidZip = "";
             eventInfo.setText("events loading...");
         }
     }
 
     private void main()
     {
-        Component[] componentList = frame.getComponents();
+        frame.remove(eventListPanel);
 
-        for(Component c : componentList)
-        {
-            if(c instanceof JPanel || c instanceof JTextArea)
-            {
-                frame.remove(c);
-            }
-        }
-
-        componentList = eventPanel.getComponents();
+        Component[] componentList = eventPanel.getComponents();
 
         for(Component c : componentList)
         {
@@ -259,7 +263,8 @@ public class GUI implements ActionListener, ItemListener
 
         zipField();
         frame.add(eventPanel, BorderLayout.CENTER);
-        frame.add(eventInfo, BorderLayout.SOUTH);
+        frame.add(eventListPanel, BorderLayout.SOUTH);
+        eventListPanel.add(eventInfo);
         frame.revalidate();
         frame.repaint();
     }
@@ -299,7 +304,7 @@ public class GUI implements ActionListener, ItemListener
         eventPanel.add(clearButton);
         eventPanel.add(main);
 
-        eventPanel.add(eventInfo);
+        eventListPanel.add(eventInfo);
         eventInfo.setText(info);
 
         submitButton.addActionListener(this);
@@ -414,7 +419,14 @@ public class GUI implements ActionListener, ItemListener
         ArrayList<String[]> venues = eventDetails.getVenues();
         for (String[] arr : venues)
         {
-            eventInfo.append(arr[0] + "\n" + arr[1] + "\n" + arr[2] + "\n" + arr[3] + "\n" + arr[4] + "\n\n");
+            for (String str : arr)
+            {
+                if (str != null)
+                {
+                    eventInfo.append(str + "\n");
+                }
+            }
+            eventInfo.append("\n");
         }
     }
 

@@ -1,4 +1,3 @@
-import java.awt.event.ActionEvent;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -8,7 +7,6 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.swing.*;
 
 public class Networking
 {
@@ -184,7 +182,10 @@ public class Networking
             String[] venueInfo = new String[5];
             venueInfo[0] = venue.getString("name");
             JSONObject address = venue.getJSONObject("address");
-            venueInfo[1] = address.getString("line1");
+            if (address.has("line1"))
+            {
+                venueInfo[0] += "\n" + address.getString("line1");
+            }
             if (address.has("line2"))
             {
                 venueInfo[1] += "\n" + address.getString("line2");
