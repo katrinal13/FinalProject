@@ -29,9 +29,15 @@ public class GUI implements ActionListener, ItemListener
 
     private String seatmapStr;
 
+    private String noPresale;
+
     private JCheckBox venues;
 
     private JCheckBox presale;
+
+    private JFrame frame;
+
+    private String invalidZip;
 
     public GUI()
     {
@@ -46,13 +52,16 @@ public class GUI implements ActionListener, ItemListener
         seatmapStr = "";
         venues = new JCheckBox();
         presale = new JCheckBox();
+        frame = new JFrame();
+        noPresale = "";
+        invalidZip = "";
 
         setUpGUI();
     }
 
     private void setUpGUI()
     {
-        JFrame frame = new JFrame("Ticket Master");
+        frame = new JFrame("Ticket Master");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         ImageIcon image = new ImageIcon("src/ticketmaster.jpg");
@@ -75,6 +84,18 @@ public class GUI implements ActionListener, ItemListener
         eventInfo.setLineWrap(true);
         eventListPanel.add(eventInfo);
 
+        zipField();
+
+        frame.add(logoWelcomePanel, BorderLayout.NORTH);
+        frame.add(eventListPanel, BorderLayout.SOUTH);
+        frame.add(eventPanel, BorderLayout.CENTER);
+
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    private void zipField()
+    {
         JLabel zipLabel = new JLabel("Enter Zip Code: ");
         zipCodeEntry = new JTextField(10);
         JButton enterButton = new JButton("Enter");
@@ -84,15 +105,8 @@ public class GUI implements ActionListener, ItemListener
         eventPanel.add(enterButton);
         eventPanel.add(resetButton);
 
-        frame.add(logoWelcomePanel, BorderLayout.NORTH);
-        frame.add(eventListPanel, BorderLayout.SOUTH);
-        frame.add(eventPanel, BorderLayout.CENTER);
-
         enterButton.addActionListener(this);
         resetButton.addActionListener(this);
-
-        frame.pack();
-        frame.setVisible(true);
     }
 
     public void actionPerformed(ActionEvent e)
@@ -102,7 +116,45 @@ public class GUI implements ActionListener, ItemListener
 
         if (text.equals("Enter"))
         {
-            loadDisplay();
+            String zip = zipCodeEntry.getText();
+            eventList = client.getEvents(zip);
+            if (eventList.size() != 0)
+            {
+                loadDisplay();
+            }
+            else
+            {
+                Component[] componentList = frame.getComponents();
+
+                for(Component c : componentList)
+                {
+                    if(c instanceof JPanel)
+                    {
+                        frame.remove(c);
+                    }
+                }
+
+                componentList = eventPanel.getComponents();
+
+                for(Component c : componentList)
+                {
+                    if(c instanceof JTextField || c instanceof JButton || c instanceof JLabel)
+                    {
+                        eventPanel.remove(c);
+                    }
+                }
+
+                if (invalidZip.equals(""))
+                {
+                    invalidZip = "There are no events within this zip code.";
+                    eventInfo.setText(invalidZip);
+                }
+
+                zipField();
+                frame.add(eventPanel, BorderLayout.CENTER);
+                frame.revalidate();
+                frame.repaint();
+            }
         }
         else if (text.equals("Reset"))
         {
@@ -153,6 +205,11 @@ public class GUI implements ActionListener, ItemListener
                     frame.setVisible(true);
                 } catch (IOException exc) {
                     System.out.println(exc.getMessage());
+                    if (seatmapStr.equals(""))
+                    {
+                        seatmapStr = "Unable to obtain the seatmap for this event.";
+                        eventInfo.append(seatmapStr);
+                    }
                 }
             }
             else
@@ -301,6 +358,7 @@ public class GUI implements ActionListener, ItemListener
         }
         else if (!box.isSelected())
         {
+            noPresale = "";
             loadEventInfo(selectedEvent);
             if (!seatmapStr.equals(""))
             {
@@ -319,7 +377,7 @@ public class GUI implements ActionListener, ItemListener
 
     private void appendVenues()
     {
-        if (!seatmapStr.equals(""))
+        if (!seatmapStr.equals("") || !noPresale.equals(""))
         {
             eventInfo.append("\n\n");
         }
@@ -332,13 +390,14 @@ public class GUI implements ActionListener, ItemListener
 
     private void appendPresale()
     {
-        if (!seatmapStr.equals(""))
+        if (!seatmapStr.equals("") && !venues.isSelected())
         {
             eventInfo.append("\n\n");
         }
         if (eventDetails.getPresales().size() == 0)
         {
-            eventInfo.append("There are no presales for this event.");
+            noPresale = "There are no presales for this event.";
+            eventInfo.append(noPresale);
         }
         else
         {

@@ -27,7 +27,6 @@ public class Networking
         String urlNowPlaying = baseUrl + endPoint + "?postalCode=" + zipCode + "&apikey=" + apiKey;
 
         String response = makeAPICall(urlNowPlaying);
-        System.out.println(response);
         ArrayList<TicketMaster> events = parseNowPlayingJSON(response);
         return events;
     }
@@ -194,10 +193,16 @@ public class Networking
             {
                 venueInfo[1] += "\n" + address.getString("line1");
             }
-            JSONObject city = venue.getJSONObject("city");
-            venueInfo[2] = city.getString("name");
-            JSONObject state = venue.getJSONObject("state");
-            venueInfo[3] = state.getString("name");
+            if (venue.has("city"))
+            {
+                JSONObject city = venue.getJSONObject("city");
+                venueInfo[2] = city.getString("name");
+            }
+            if (venue.has("state"))
+            {
+                JSONObject state = venue.getJSONObject("state");
+                venueInfo[3] = state.getString("name");
+            }
             venueInfo[4] = venue.getString("postalCode");
             venues.add(venueInfo);
         }
