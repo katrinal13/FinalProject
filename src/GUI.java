@@ -124,36 +124,12 @@ public class GUI implements ActionListener, ItemListener
             }
             else
             {
-                Component[] componentList = frame.getComponents();
-
-                for(Component c : componentList)
-                {
-                    if(c instanceof JPanel)
-                    {
-                        frame.remove(c);
-                    }
-                }
-
-                componentList = eventPanel.getComponents();
-
-                for(Component c : componentList)
-                {
-                    if(c instanceof JTextField || c instanceof JButton || c instanceof JLabel)
-                    {
-                        eventPanel.remove(c);
-                    }
-                }
-
                 if (invalidZip.equals(""))
                 {
                     invalidZip = "There are no events within this zip code.";
                     eventInfo.setText(invalidZip);
                 }
-
-                zipField();
-                frame.add(eventPanel, BorderLayout.CENTER);
-                frame.revalidate();
-                frame.repaint();
+                main();
             }
         }
         else if (text.equals("Reset"))
@@ -164,19 +140,22 @@ public class GUI implements ActionListener, ItemListener
         {
             JButton seatmap = new JButton("Seatmap");
             JButton images = new JButton("View Image");
+            JButton back = new JButton("Back");
 
             venues = new JCheckBox("Venues");
             presale = new JCheckBox("Presale");
 
             images.addActionListener(this);
             seatmap.addActionListener(this);
+            back.addActionListener(this);
             venues.addItemListener(this);
             presale.addItemListener(this);
 
-            eventPanel.add(seatmap, BorderLayout.NORTH);
-            eventPanel.add(images, BorderLayout.NORTH);
-            eventPanel.add(venues, BorderLayout.NORTH);
-            eventPanel.add(presale, BorderLayout.NORTH);
+            eventPanel.add(seatmap);
+            eventPanel.add(images);
+            eventPanel.add(venues);
+            eventPanel.add(presale);
+            eventPanel.add(back);
 
             String selectedEventNum = eventEntry.getText();
             int eventNumInt = Integer.parseInt(selectedEventNum);
@@ -236,6 +215,53 @@ public class GUI implements ActionListener, ItemListener
                 System.out.println(exc.getMessage());
             }
         }
+        else if (text.equals("Back"))
+        {
+            loadDisplay();
+            Component[] componentList = eventPanel.getComponents();
+
+            for (Component c : componentList)
+            {
+                if(c instanceof JCheckBox)
+                {
+                    eventPanel.remove(c);
+                }
+            }
+        }
+        else if (text.equals("Return to Main"))
+        {
+            main();
+            eventInfo.setText("events loading...");
+        }
+    }
+
+    private void main()
+    {
+        Component[] componentList = frame.getComponents();
+
+        for(Component c : componentList)
+        {
+            if(c instanceof JPanel || c instanceof JTextArea)
+            {
+                frame.remove(c);
+            }
+        }
+
+        componentList = eventPanel.getComponents();
+
+        for(Component c : componentList)
+        {
+            if(c instanceof JTextField || c instanceof JButton || c instanceof JLabel)
+            {
+                eventPanel.remove(c);
+            }
+        }
+
+        zipField();
+        frame.add(eventPanel, BorderLayout.CENTER);
+        frame.add(eventInfo, BorderLayout.SOUTH);
+        frame.revalidate();
+        frame.repaint();
     }
 
     public void loadDisplay()
@@ -261,6 +287,8 @@ public class GUI implements ActionListener, ItemListener
             info += i + 1 + ". " + eventList.get(i).getEventName() + ", " + eventList.get(i).getEventID() + "\n";
         }
 
+        JButton main = new JButton("Return to Main");
+
         JLabel eventLabel = new JLabel("Which Event? (Enter 1-" + eventList.size() + "): ");
         eventEntry = new JTextField(10);
         JButton submitButton = new JButton("Submit");
@@ -269,12 +297,14 @@ public class GUI implements ActionListener, ItemListener
         eventPanel.add(eventEntry);
         eventPanel.add(submitButton);
         eventPanel.add(clearButton);
+        eventPanel.add(main);
 
         eventPanel.add(eventInfo);
         eventInfo.setText(info);
 
         submitButton.addActionListener(this);
         clearButton.addActionListener(this);
+        main.addActionListener(this);
     }
 
     public void loadEventInfo(TicketMaster event)
@@ -288,7 +318,7 @@ public class GUI implements ActionListener, ItemListener
                 if (c instanceof JButton)
                 {
                     JButton button = (JButton) c;
-                    if (!button.getText().equals("Seatmap") && !button.getText().equals("View Image"))
+                    if (!button.getText().equals("Seatmap") && !button.getText().equals("View Image") && !button.getText().equals("Back"))
                     {
                         eventPanel.remove(c);
                     }
