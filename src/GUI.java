@@ -121,10 +121,10 @@ public class GUI implements ActionListener, ItemListener
             venues.addItemListener(this);
             presale.addItemListener(this);
 
-            eventPanel.add(seatmap);
-            eventPanel.add(images);
-            eventPanel.add(venues);
-            eventPanel.add(presale);
+            eventPanel.add(seatmap, BorderLayout.NORTH);
+            eventPanel.add(images, BorderLayout.NORTH);
+            eventPanel.add(venues, BorderLayout.NORTH);
+            eventPanel.add(presale, BorderLayout.NORTH);
 
             String selectedEventNum = eventEntry.getText();
             int eventNumInt = Integer.parseInt(selectedEventNum);
@@ -319,6 +319,10 @@ public class GUI implements ActionListener, ItemListener
 
     private void appendVenues()
     {
+        if (!seatmapStr.equals(""))
+        {
+            eventInfo.append("\n\n");
+        }
         ArrayList<String[]> venues = eventDetails.getVenues();
         for (String[] arr : venues)
         {
@@ -328,6 +332,10 @@ public class GUI implements ActionListener, ItemListener
 
     private void appendPresale()
     {
+        if (!seatmapStr.equals(""))
+        {
+            eventInfo.append("\n\n");
+        }
         if (eventDetails.getPresales().size() == 0)
         {
             eventInfo.append("There are no presales for this event.");
