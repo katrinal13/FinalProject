@@ -179,7 +179,7 @@ public class Networking
         for (int i = 0; i < venuesObj.length(); i++)
         {
             JSONObject venue = venuesObj.getJSONObject(i);
-            String[] venueInfo = new String[5];
+            String[] venueInfo = new String[7];
             if (venue.has("name"))
             {
                 venueInfo[0] = venue.getString("name");
@@ -187,27 +187,27 @@ public class Networking
             JSONObject address = venue.getJSONObject("address");
             if (address.has("line1"))
             {
-                venueInfo[1] += "\n" + address.getString("line1");
+                venueInfo[1] = address.getString("line1");
             }
             if (address.has("line2"))
             {
-                venueInfo[1] += "\n" + address.getString("line2");
+                venueInfo[2] = address.getString("line2");
             }
             if (address.has("line3"))
             {
-                venueInfo[1] += "\n" + address.getString("line3");
+                venueInfo[3] = address.getString("line3");
             }
             if (venue.has("city"))
             {
                 JSONObject city = venue.getJSONObject("city");
-                venueInfo[2] = city.getString("name");
+                venueInfo[4] = city.getString("name");
             }
             if (venue.has("state"))
             {
                 JSONObject state = venue.getJSONObject("state");
-                venueInfo[3] = state.getString("name");
+                venueInfo[5] = state.getString("name");
             }
-            venueInfo[4] = venue.getString("postalCode");
+            venueInfo[6] = venue.getString("postalCode");
             venues.add(venueInfo);
         }
 
