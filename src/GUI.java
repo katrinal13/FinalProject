@@ -403,6 +403,7 @@ public class GUI implements ActionListener, ItemListener
             loadEventInfo(selectedEvent);
             if (!seatmapStr.equals(""))
             {
+                seatmapStr = "There is no seatmap for this event.";
                 eventInfo.append(seatmapStr);
             }
             if (venues.isSelected())
