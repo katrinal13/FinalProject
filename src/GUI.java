@@ -206,7 +206,11 @@ public class GUI implements ActionListener, ItemListener
             {
                 if (seatmapStr.equals(""))
                 {
-                    seatmapStr = "There is no seatmap for this event.";
+                    if (!noPresale.equals(""))
+                    {
+                        seatmapStr += "\n\n";
+                    }
+                    seatmapStr += "There is no seatmap for this event.";
                     eventInfo.append(seatmapStr);
                 }
             }
@@ -229,6 +233,8 @@ public class GUI implements ActionListener, ItemListener
         else if (text.equals("Back"))
         {
             loadDisplay();
+            seatmapStr = "";
+            noPresale = "";
             Component[] componentList = eventPanel.getComponents();
 
             for (Component c : componentList)

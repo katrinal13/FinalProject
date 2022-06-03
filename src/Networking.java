@@ -180,11 +180,14 @@ public class Networking
         {
             JSONObject venue = venuesObj.getJSONObject(i);
             String[] venueInfo = new String[5];
-            venueInfo[0] = venue.getString("name");
+            if (venue.has("name"))
+            {
+                venueInfo[0] = venue.getString("name");
+            }
             JSONObject address = venue.getJSONObject("address");
             if (address.has("line1"))
             {
-                venueInfo[0] += "\n" + address.getString("line1");
+                venueInfo[1] += "\n" + address.getString("line1");
             }
             if (address.has("line2"))
             {
@@ -192,7 +195,7 @@ public class Networking
             }
             if (address.has("line3"))
             {
-                venueInfo[1] += "\n" + address.getString("line1");
+                venueInfo[1] += "\n" + address.getString("line3");
             }
             if (venue.has("city"))
             {
