@@ -1,18 +1,15 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.BorderLayout;
-import java.awt.Image;
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import javax.swing.JScrollPane;
 
 public class GUI implements ActionListener, ItemListener
 {
@@ -22,25 +19,16 @@ public class GUI implements ActionListener, ItemListener
     private Networking client;
     private JTextArea eventInfo;
     private ArrayList<TicketMaster> eventList;
-
     private EventDetails eventDetails;
-
     private TicketMaster selectedEvent;
-
     private String seatmapStr;
-
     private String noPresale;
-
     private JCheckBox venues;
-
     private JCheckBox presale;
-
     private JFrame frame;
-
     private String invalidZip;
-
+    private JScrollPane scrollPane;
     private JPanel eventListPanel;
-
     public GUI()
     {
         eventInfo = new JTextArea(35, 70);
@@ -56,12 +44,11 @@ public class GUI implements ActionListener, ItemListener
         presale = new JCheckBox();
         noPresale = "";
         invalidZip = "";
+        scrollPane = new JScrollPane();
         eventListPanel = new JPanel();
-
-        setUpGUI();
     }
 
-    private void setUpGUI()
+    public void setUpGUI()
     {
         frame = new JFrame("Ticket Master");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -83,12 +70,14 @@ public class GUI implements ActionListener, ItemListener
         eventInfo.setFont(new Font("Helvetica", Font.PLAIN, 13));
         eventInfo.setWrapStyleWord(true);
         eventInfo.setLineWrap(true);
+
         eventListPanel.add(eventInfo);
+        scrollPane = new JScrollPane(eventListPanel);
 
         zipField();
 
         frame.add(logoWelcomePanel, BorderLayout.NORTH);
-        frame.add(eventListPanel, BorderLayout.SOUTH);
+        frame.add(scrollPane, BorderLayout.SOUTH);
         frame.add(eventPanel, BorderLayout.CENTER);
 
         frame.pack();
@@ -149,6 +138,7 @@ public class GUI implements ActionListener, ItemListener
             }
             eventPanel.revalidate();
             eventPanel.repaint();
+
             JButton seatmap = new JButton("Seatmap");
             JButton images = new JButton("View Image");
             JButton back = new JButton("Back");
@@ -255,13 +245,13 @@ public class GUI implements ActionListener, ItemListener
 
     private void main()
     {
-        frame.remove(eventListPanel);
+        frame.remove(scrollPane);
 
         Component[] componentList = eventPanel.getComponents();
 
-        for(Component c : componentList)
+        for (Component c : componentList)
         {
-            if(c instanceof JTextField || c instanceof JButton || c instanceof JLabel)
+            if (c instanceof JTextField || c instanceof JButton || c instanceof JLabel)
             {
                 eventPanel.remove(c);
             }
@@ -269,7 +259,7 @@ public class GUI implements ActionListener, ItemListener
 
         zipField();
         frame.add(eventPanel, BorderLayout.CENTER);
-        frame.add(eventListPanel, BorderLayout.SOUTH);
+        frame.add(scrollPane, BorderLayout.SOUTH);
         eventListPanel.add(eventInfo);
         frame.revalidate();
         frame.repaint();
@@ -322,9 +312,9 @@ public class GUI implements ActionListener, ItemListener
     {
         Component[] componentList = eventPanel.getComponents();
 
-        for(Component c : componentList)
+        for (Component c : componentList)
         {
-            if(c instanceof JLabel || c instanceof JButton || c instanceof JTextField)
+            if (c instanceof JLabel || c instanceof JButton || c instanceof JTextField)
             {
                 if (c instanceof JButton)
                 {
