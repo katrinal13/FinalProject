@@ -3,26 +3,18 @@ import java.util.ArrayList;
 public class EventDetails extends TicketMaster
 {
     private String url;
-
     private String info;
-
     private String startLocalDate;
     private String startTime;
-
     private String endLocalDate;
     private String endTime;
-
     private String saleStart;
     private String saleEnd;
-
     private ArrayList<String[]> presales;
-
     private String seatmap;
     private String ticketLimit;
-
     private ArrayList<String[]> venues;
     private String pleaseNote;
-
     private String image;
 
     public EventDetails (String eventName, String eventID, String url, String info, String startLocalDate, String startTime, String endLocalDate, String endTime, String saleStart, String saleEnd, ArrayList<String[]> presales, String seatmap, String ticketLimit, ArrayList<String[]> venues, String pleaseNote, String image)
