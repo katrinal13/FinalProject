@@ -330,8 +330,6 @@ public class GUI implements ActionListener, ItemListener
                 }
             }
         }
-        eventPanel.revalidate();
-        eventPanel.repaint();
 
         eventDetails = client.getEventDetails(event.getEventID());
 
@@ -441,19 +439,16 @@ public class GUI implements ActionListener, ItemListener
         else
         {
             ArrayList<String[]> presale = eventDetails.getPresales();
-            if (presale != null)
+            for (String[] arr : presale)
             {
-                for (String[] arr : presale)
+                for (String str : arr)
                 {
-                    for (String str : arr)
+                    if (!str.equals(""))
                     {
-                        if (!str.equals(""))
-                        {
-                            eventInfo.append(str + "\n");
-                        }
+                        eventInfo.append(str + "\n");
                     }
-                    eventInfo.append("\n");
                 }
+                eventInfo.append("\n");
             }
         }
     }
