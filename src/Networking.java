@@ -25,7 +25,7 @@ public class Networking
         String urlNowPlaying = baseUrl + endPoint + "?postalCode=" + zipCode + "&apikey=" + apiKey;
 
         String response = makeAPICall(urlNowPlaying);
-        ArrayList<TicketMaster> events = parseNowPlayingJSON(response);
+        ArrayList<TicketMaster> events = parseEventListJSON(response);
         return events;
     }
 
@@ -43,7 +43,7 @@ public class Networking
         }
     }
 
-    private ArrayList<TicketMaster> parseNowPlayingJSON(String json)
+    private ArrayList<TicketMaster> parseEventListJSON(String json)
     {
         ArrayList<TicketMaster> events = new ArrayList<TicketMaster>();
 
@@ -215,7 +215,9 @@ public class Networking
         JSONObject image = imagesObj.getJSONObject(3);
         String imageURL = image.getString("url");
 
-        EventDetails eventInfo = new EventDetails(eventName, eventID, url, info, startLocalDate, startTime, endLocalDate, endTime, saleStart, saleEnd, presales, seatmap, ticketLimit, venues, pleaseNote, imageURL);
+        EventDetails eventInfo = new EventDetails(eventName, eventID, url, info, startLocalDate,
+                                                  startTime, endLocalDate, endTime, saleStart, saleEnd,
+                                                  presales, seatmap, ticketLimit, venues, pleaseNote, imageURL);
         return eventInfo;
     }
 }

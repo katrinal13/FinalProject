@@ -37,8 +37,6 @@ public class GUI implements ActionListener, ItemListener
         eventList = new ArrayList<TicketMaster>();
         client = new Networking();
         eventPanel = new JPanel();
-        eventDetails = null;
-        selectedEvent = null;
         seatmapStr = "";
         venues = new JCheckBox();
         presale = new JCheckBox();
